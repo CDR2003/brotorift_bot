@@ -28,6 +28,7 @@ defmodule BrotoriftBot.MixProject do
     [
       {:poison, "~> 3.1"},
       {:brotorift, "~> 0.4.4"},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
