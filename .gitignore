@@ -23,4 +23,3 @@ erl_crash.dump
 brotorift_bot-*.tar
 
 /.elixir_ls/
-/config/
