@@ -7,7 +7,8 @@ defmodule BrotoriftBot.BotManager do
 
   def run() do
     {:ok, bot_configs} = Application.fetch_env(:brotorift_bot, :bots)
-    bots = bot_configs |> Enum.map(&start_bots/1) |> List.flatten()
+    bot_configs_with_indices = bot_configs |> Enum.map(fn {fun, count} -> List.duplicate(fun, count) end) |> List.flatten()
+    bots = bot_configs_with_indices |> Stream.with_index() |> Enum.map(&start_bot/1) |> Enum.to_list()
 
     wait_for_bots(bots)
   end
@@ -18,11 +19,9 @@ defmodule BrotoriftBot.BotManager do
     {:noreply, bots}
   end
 
-  defp start_bots({fun, count}) do
-    (1 .. count) |> Enum.map(fn _i ->
-      {:ok, client_module} = Application.fetch_env(:brotorift_bot, :client)
-      {:ok, client} = DynamicSupervisor.start_child(BrotoriftBot.ClientSupervisor, {client_module, []})
-      Task.Supervisor.async(BrotoriftBot.BotSupervisor, fn -> fun.(client) end)
-    end)
+  defp start_bot({fun, index}) do
+    {:ok, client_module} = Application.fetch_env(:brotorift_bot, :client)
+    {:ok, client} = DynamicSupervisor.start_child(BrotoriftBot.ClientSupervisor, {client_module, []})
+    Task.Supervisor.async(BrotoriftBot.BotSupervisor, fn -> fun.(client, index) end)
   end
 end
