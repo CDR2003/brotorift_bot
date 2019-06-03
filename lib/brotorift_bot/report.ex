@@ -25,6 +25,11 @@ defmodule BrotoriftBot.Report do
     update_action(report, action)
   end
 
+  def sleep(report, duration, start_time, stop_time) do
+    action = %{action: "sleep", duration: duration, start_time: start_time, stop_time: stop_time}
+    update_action(report, action)
+  end
+
   def get_actions(report) do
     Agent.get(report, &Enum.reverse/1, :infinity)
   end
