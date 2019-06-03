@@ -28,7 +28,7 @@ defmodule BrotoriftBot.ReportManager do
     full_report = %{start_time: start_time, bots: bot_reports}
 
     {:ok, file} = File.open("report.json", [:write])
-    content = Poison.encode!(full_report)
+    content = Poison.encode!(full_report, pretty: true)
     IO.binwrite(file, content)
 
     IO.puts "Report.json generated."
